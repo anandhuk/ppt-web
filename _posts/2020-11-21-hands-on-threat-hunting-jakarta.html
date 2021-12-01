@@ -1,0 +1,1088 @@
+---
+layout: blue-slide
+title:  "OWASP Virtual AppSec Indonesia - Hands on Threat Hunting Workshop"
+date:   2020-11-20 12:15:11 +0000
+categories: git workshop presentation malware
+image:  images/fulls/hands-on-threat-hunting-jakarta-cover.png
+---
+
+<img class="banner-img" src="/images/fulls/hands-on-threat-hunting-jakarta-cover.png" alt="Hands on Threat Hunting Workshop">
+
+# Hands on Threat Hunting Workshop
+.footnote[By<br>[Rejah Rehim](https://rejahrehim.com) and [Manieendar Mohan](https://manieendar.me/)]
+---
+
+name: About us
+class: middle, center
+
+# <span class="highlated-ok">[Rejah](https://rejahrehim.com)</span>
+
+## Founder of <span class="highlated-ok">[Beagle Security](https://beaglesecurity.com)</span>
+<br>
+# <span class="highlated-ok">[Manieendar](https://manieendar.me)</span>
+
+## Cyber Security Engineer at <span class="highlated-ok">[Beagle Security](https://beaglesecurity.com)</span>
+
+---
+name: malwaredef
+class: middle, center
+
+# What is a Malware?
+
+--
+
+A program that is specifically designed to disrupt, damage, or gain unauthorized access to a computer system.
+
+---
+name: malwarehistory
+class: middle, center
+
+# From pranks to nuclear sabotage
+
+### A brief history of major malware outbreaks 
+
+--
+
+- <b class="highlated-text">Creeper (1971)</b> - Creeper was an experimental computer program written by Bob Thomas at BBN in 1971, it is considered as the first computer virus!
+
+--
+
+- <b class="highlated-text">Morris Worm (1988)</b> - The first Computer virus which spread extensively in the wild.
+
+--
+
+- <b class="highlated-text">ILOVEYOU (2000)</b> - It came via email however it sent itself to all contacts. It also overwrote office, image, and audio files. It infected over 50 million computers in less than 10 days!.
+
+---
+class: middle, center
+
+### A brief history of major malware outbreaks 
+
+- <b class="highlated-text">ZueS (2007)</b> - A Trojan horse malware package with a lot of capabilities like steal banking information by man-in-the-browser keystroke logging and form grabbing.
+
+--
+
+- <b class="highlated-text">Stuxnet (2010)</b> - It targets SCADA systems and is believed to be responsible for causing substantial damage to the nuclear program of Iran.
+
+--
+
+- <b class="highlated-text">WannaCry (2017)</b> - Eternal Blue, NSA, The Shadow Brokers, Lazarus Group, Ransomeware, Boom!
+
+---
+name: malwaretypes
+class: middle, center
+
+# Different Types of Malwares
+
+--
+
+## Virus
+
+Malware that is capable of copying itself and spreading to other computers.
+
+--
+
+## Trojan
+
+Malware that disguises itself as a normal file or program to trick users into downloading and installing malware.
+
+--
+
+## Ransomware
+
+Ransomware is a form of malware that essentially holds a computer system captive while demanding a ransom.
+
+--
+
+## Worm
+
+They spread over computer networks by exploiting operating system vulnerabilities.
+
+---
+name: malwaretypes
+class: middle, center
+
+# Different Types of Malwares
+
+## Rootkit
+
+Malicious software designed to remotely access or control a computer without being detected by users or security programs.
+
+--
+
+## Spyware
+
+Spyware is a type of malware that functions by spying on user activity without their knowledge.
+
+--
+
+## Keyloggers
+
+Malicious software developed to monitor and record the keystrokes that the user enters through the keyboard
+
+---
+name: malwarelifecycle
+class: middle, center
+
+# The Malware Life Cycle
+
+--
+
+## Infection 
+
+Infection almost always has a social aspect, such as getting
+users to click on a bad link in a phishing e-mail, luring them
+to a social networking site, or sending them to a web page
+with an infected image, for example.
+
+--
+
+## Persistance 
+
+Once a target machine is infected, the attacker needs to
+ensure persistence (the resilience or survivability of the bot).
+
+---
+class: middle, center
+
+## Communication 
+
+Communication is fundamental to a successful attack.
+Malware must be able to communicate with other infected
+systems or controllers to enable command and control, and
+to extract stolen data from a target system or network.
+
+--
+
+## Command and control 
+
+Command and control rides on top of the communication plat-
+form that is established but is really about making sure that the
+malware or attack is controllable, manageable, and updateable.
+
+---
+name: infectionmethods
+class: middle, center
+
+# Common Infection Methods used by Adversaries
+
+--
+
+## Social Engineering
+
+The most common method for hackers to spread malwares is through social engineering. Hackers use carefully crafted methods to trick a victim into opening an attachment or clicking on a link that contains a malicious file.
+
+Methods can be :
+
+--
+
+Email attachments
+
+--
+
+Malicious URLs
+
+--
+
+Malvertising
+
+---
+class: middle, center
+
+## Network Protocols
+
+--
+
+An increasingly popular mechanism in which attackers are infecting victims is through network protocols
+
+Examples are RDP, SMB etc
+
+--
+
+## Drive-by Downloads
+
+--
+
+Another entry path that attackers use to deliver ransomware is through what is known as drive-by downloads. These are malicious downloads that happen without a user’s knowledge when they visit a compromised website.
+
+When you visit the infected website, the malicious content analyzes your device for specific vulnerabilities and automatically executes the malicious code in the background.
+
+---
+
+class: middle, center
+
+## USB drives and portable media
+
+--
+
+USB drives and portable computers are a common delivery vehicle for malwares. Connecting an infected device can lead to infecting the local machine and potentially spreading across the network.
+
+--
+
+In 2016, Australian police issued a warning to citizens about USB drives containing malicious software appearing in mailboxes. The USB drives masqueraded as a promotional Netflix application, then once opened deployed ransomware on to the unsuspecting user’s computer. 
+
+---
+name: malwareanalysis
+class: middle, center
+
+# What is malware analysis?
+
+--
+
+Malware analysis is the study or process of determining the functionality, origin and potential impact of a malware.
+
+---
+name: analysistechniques
+class: middle, center
+
+# Malware analysis techniques
+
+--
+
+There are two fundamental approaches to malware analysis:
+
+--
+
+## Static Analysis
+
+--
+
+## Dynamic Analysis
+
+---
+class: middle, center
+
+<img src="{{ site.github.url }}/images/fulls/analysis-cmplx.png" alt="Analysis Complexity" style="width:720px; height:425px;"/>
+
+---
+name: staticanalysis
+class: middle, center
+
+## Fully-Automated Analysis
+
+The easiest way to assess the nature of a suspicious file is to scan it using fully-automated tools.
+Helps to handle large number of files.
+
+- https://www.hybrid-analysis.com/
+- https://sandbox.pikker.ee/
+- https://amaaas.com
+- https://any.run/
+- https://analyze.intezer.com/
+
+## Static Properties Analysis
+
+An analyst interested in taking a closer look at the suspicious file might proceed by examining its static properties.
+Looking at static properties can sometimes be sufficient for defining basic indicators of compromise.
+
+---
+name: statichandson
+class: middle, center
+
+# Hands-on
+
+--
+
+## Initial Assessment
+
+We are using PeStudio for Static Properties Analysis
+
+<img src="{{ site.github.url }}/images/fulls/pe-studio.png" alt="Lab Setup"/>
+---
+class: middle, center
+
+### Hashes
+
+This can be identified as the digital fingerprint of a program, in case of malicious programs this can be used for identifying the executable at online(virustotal.com, totalhash.com etc).
+
+---
+class: middle, center
+### Strings
+
+Strings can give us valuable information about the malware functionality. Malware will usually contain useful strings and other random strings, also known as garbage strings.
+
+The types of strings we are looking for are:
+    
+File names
+
+URL’s (Domains the malware connects to)
+
+IP Addresses
+
+Registry Keys
+
+Attackers may also include fake strings to disrupt our analysis!. Completely Random looking strings can be a sign of packed malwares.
+
+---
+class: middle, center
+### Embedded Artifacts(Libraries)
+
+Windows executable requires dll's to interact with the environment. dll's help to intertact with hardware, filessytem, network etc. The lesser imports the higher chances to doubt the program.
+
+---
+class: middle, center
+### Imports and Exports
+
+The functions used by the program while it's running(Can be memory allocation, accessing disks, cryptography etc). 
+
+eg: VirtualAlloc - requesting extra memory from operating system, it can be misused by malicious program to expand and extract the packed code.
+
+---
+name: staticanalysis
+class: middle, center
+
+## Interactive Behavior Analysis
+
+After using automated tools and examining static properties of the file.
+This often entails infecting an isolated laboratory system with the malicious program to observe its behavior.
+
+## Manual Code Reversing
+
+Reverse-engineering the code that comprises the specimen can add valuable insights to the findings available after completing interactive behavior analysis. Some characteristics of the specimen are simply impractical to exercise and examine without examining the code.
+
+code reversing can provide include:
+
+- Decoding encrypted data stored or transferred by the sample;
+- Determining the logic of the malicious program’s domain generation algorithm;
+- Understanding other capabilities of the sample that didn’t exhibit themselves during behavior analysis.
+---
+class: middle, center
+
+# Hands on
+
+---
+class: middle, center
+
+## Preparing the Lab
+
+--
+
+Before you can run malware to perform dynamic analysis, you must set up a safe environment.
+
+--
+
+Why you need a safe environment ?
+
+--
+
+So how we do it ?
+
+---
+name: staticanalysis
+class: middle, center
+
+<img src="{{ site.github.url }}/images/fulls/lab.png" alt="Lab Setup"/>
+
+---
+name: staticanalysis
+class: middle, center
+
+## Creating the virtual machines
+- Windows
+- Linux  - Remnex
+
+---
+name: staticanalysis
+class: middle, center
+
+## Setup of the analysis machine: INetSim, Burp
+
+```
+sudo su
+echo "deb http://www.inetsim.org/debian/ binary/" > /etc/apt/sources.list.d/inetsim.list
+wget -O - http://www.inetsim.org/inetsim-archive-signing-key.asc | apt-key add -
+apt update
+apt install inetsim
+```
+
+```
+bash ~/Downloads/burpsuite_free_linux_v1_7_23.sh
+```
+
+---
+name: staticanalysis
+class: middle, center
+
+## Setting up an isolated virtual network
+
+- We want to set up an isolated network containing our VMs.
+- This network will not be able to access the Internet
+- We want the analysis machine to act as a network gateway
+
+---
+name: staticanalysis
+class: middle, center
+
+## VirtualBox Internal Network
+
+For those familiar with VirtualBox, an internal network differs from a host-only network in that an internal network cannot access the host machine at all.
+
+<img src="{{ site.github.url }}/images/fulls/net.png" alt="VB internal network"/>
+
+---
+name: staticanalysis
+class: middle, center
+
+## Analysis machine
+
+
+Open the file `/etc/network/interfaces` as `root`, and add the following at the end
+
+```
+auto eth0
+iface eth0 inet static
+ address 10.0.0.1
+ netmask 255.255.255.0
+
+```
+
+This will assign the machine the static IP 10.0.0.1 on our virtual network. We need to start it up using:
+
+`sudo ifup eth0`
+
+---
+name: staticanalysis
+class: middle, center
+
+## Windows 7 victim machine
+
+Right-click on the network icon in the taskbar (or go to `Start Menu` > `Control Panel` > `Network and Internet` > `Network and Sharing center`), click on `Local Area Connection 2` > `Properties`, select on I`nternet Protocol Version 4`, and click on the `Properties` button.
+
+Assign the static IP `10.0.0.3`
+
+<img src="{{ site.github.url }}/images/fulls/netsettings.png" alt="Internet conf Windows"/>
+
+---
+name: staticanalysis
+class: middle, center
+
+### Check the Connection
+
+`ping 10.0.0.1`
+
+---
+## Ubuntu victim machine
+
+Append the following at the end of the file `/etc/network/interfaces`
+
+```
+auto eth0
+iface eth0 inet static
+ address 10.0.0.2
+ gateway 10.0.0.1
+ netmask 255.255.255.0
+ dns-nameservers 10.0.0.1
+```
+
+And run:
+
+```
+sudo ifup eth0
+sudo service networking restart
+```
+---
+name: staticanalysis
+class: middle, center
+
+## Creating and restoring snapshots
+
+Just select `Machine` > `Take Snapshot`.
+
+You can name the snapshot Clean state.
+It doesn’t hurt to do it for your analysis machine as well.
+
+<img src="{{ site.github.url }}/images/fulls/snap.png" alt="Internet conf Windows"/>
+
+---
+
+name: staticanalysis
+class: middle, center
+
+# Static Malware Analysis
+
+--
+
+Taking a closer look at the suspicious file by examining its static properties.
+
+--
+
+Static properties include the strings embedded into the file, header details, hashes, embedded resources, packer signatures, metadata such as the creation date, etc.
+
+--
+
+This process also helps determine whether the analyst should take closer look at the specimen using more comprehensive techniques and where to focus the subsequent steps.
+
+---
+class: middle, center
+
+## Program Analysis
+
+--
+
+### Determining the type of executable
+
+--
+
+ELF, EXE, APK.. etc
+
+---
+class: middle, center
+
+## PE
+
+<img src="{{ site.github.url }}/images/fulls/PE.png" alt="Portable Executable" style="width:900px; height:500px;"/>
+
+---
+class: middle, center
+
+## ELF
+
+<img src="{{ site.github.url }}/images/fulls/ELF.png" alt="ELF" style="width:900px; height:500px;"/>
+
+---
+class: middle, center
+
+### Portable Executable File
+
+--
+
+The Portable Executable (PE) file format is used by Windows execut-
+ables, object code, and DLLs. The PE file format is a data structure that
+contains the information necessary for the Windows OS loader to manage
+the wrapped executable code
+
+---
+class: middle, center
+
+### PE Headers and Sections
+
+--
+
+PE file headers can provide considerably more information than just imports.
+The PE file format contains a header followed by a series of sections. The
+header contains metadata about the file itself.
+
+--
+
+### PE Headers
+
+--
+
+Imports - Functions from other libraries that are used by the malware
+
+Exports -  Functions in the malware that are meant to be called by other programs
+or libraries
+
+Time Date Stamp - Time when the program was compiled
+
+Sections - Names of sections in the file and their sizes on disk and in memory
+
+Subsystem - Indicates whether the program is a command-line or GUI application
+
+Resources - Strings, icons, menus, and other information included in the file
+
+---
+class: middle, center
+
+### PE Sections
+
+--
+
+.text - Contains the executable code
+
+.rdata - Contains read-only data that is globally accessible within the program
+
+.data - Stores global data accessed throughout the program
+
+.rsrc - Stores resources needed by the executable
+
+--
+
+### Tools that can be used to analyse PE files
+
+- PEView
+- PEiD
+- PEStudio
+- Resouce Hacker
+
+---
+class: middle, center
+
+## The baby steps
+
+--
+
+Look for strings
+
+--
+
+Calculate Hash of the executable
+
+--
+
+Look them up in online
+virustotal.com is a great resource for simple static analysis.
+
+---
+class: middle, center
+
+## Reversing the executable
+
+--
+
+Advanced static analysis consists of reverse-engineering the malware’s internals by loading the executable into a disassembler and looking at the program instructions in order to discover what the program does.
+
+The instructions are executed by the CPU, so advanced static analysis tells you exactly what the program does.
+
+---
+
+name: dynamicanalysis
+class: middle, center
+
+# Dynamic Malware Analysis
+
+--
+
+The basic dynamic analysis techniques involve running the malware and observing its behavior on the system in order to remove the infection, produce effective signatures, or both.
+
+--
+
+Advanced dynamic analysis uses a debugger to examine the internal state of a running malicious executable.
+
+---
+
+class: middle, center
+
+# Let's begin
+
+--
+
+<img src="{{ site.github.url }}/images/fulls/dynamic-cmplx.png" alt="Analysis Complexity" style="width:312px; height:322px;"/>
+
+---
+class: middle, center
+
+## Diffing
+
+--
+
+Take a snapshot of a clean system state and a snapshot of a compromised system state.
+
+--
+
+By diffing the artifacts can be observed easily, although we can miss evidence that is created during malware activities and erased purposely by malware
+
+--
+
+Tools - regshot, autoruns
+
+---
+class: middle, center
+
+## System Monitoring
+
+--
+
+From a clean system state, record every individual change on system and network traffic that appear after execution of made by the suspicious file
+
+--
+
+Tools - procmon, TCPView, Process Explorer, WinObj, strace, systrace, netstat
+
+---
+class: middle, center
+
+## Network Monitoring
+
+--
+
+Malware often beacons out and eventually communicates with a command-and-control server.
+
+--
+
+### Packet Sniffing
+
+Tools - wireshark, zap
+
+--
+
+### Faking a Network
+
+Tools - ApateDNS, INetSim, netcat
+
+---
+name: networkhandson
+class: middle, center
+
+# Hands-on
+
+## Setting up INetSim and Burp
+
+First, create your own copy of INetSim .conf and data directory
+
+```
+mkdir malware-analysis
+cp /etc/inetsim/inetsim.conf malware-analysis
+sudo cp -r /var/lib/inetsim malware-analysis
+sudo chmod -R 777 data
+cd malware-analysis
+```
+
+---
+class: middle, center
+
+Change the following line at the file `inetsim.conf`
+
+```
+#service_bind_address   10.0.0.1 
+```
+to
+
+```
+service_bind_address   0.0.0.0
+```
+
+---
+class: middle, center
+
+we have to disable systemd-resolved, which is a local DNS server shipped by default with Ubuntu and will conflict with INetSim’s DNS server.
+
+```
+sudo systemctl disable systemd-resolved.service
+sudo service systemd-resolved stop
+```
+--
+
+By default, INetSim’s DNS server will resolve all the domain names to 127.0.0.1. We want any domain name to resolve to 10.0.0.1 (the analysis machine IP) instead; uncomment the following line:
+
+```
+#dns_default_ip    10.0.0.1
+```
+---
+class: middle, center
+
+Set up the https-binding-port for burp. Replace the following line 
+
+```
+#https_bind_port 443
+```
+
+by
+
+```
+#https_bind_port 8443
+```
+---
+class: middle, center
+
+let’s run INetSim!
+
+```
+sudo inetsim --data data --conf inetsim.conf
+```
+
+<img src="{{ site.github.url }}/images/fulls/vm7.png" alt="INetSim Running"/>
+---
+class: middle, center
+
+## Setting up BurpSuite for SSL interception
+
+<img src="{{ site.github.url }}/images/fulls/ssl-network.png" alt="SSL Setup"/>
+
+To be able to analyze the SSL traffic, we also need to run Burp. We’ll run it as a transparent proxy in front of INetSim. When a victim machine will initiate a SSL connection, it will first go to Burp, which will then proxy it to INetSim.
+
+Make sure that you run Burp as root.
+
+---
+class: middle, center
+
+Create a project -> Proxy -> Options -> Edit Default Interface
+
+```
+Binding tab
+    Bind to port: 443
+    Bind to address: all interfaces
+Request handling tab:
+    Redirect to host: localhost
+    Redirect to port: 8443
+    Check Support invisible proxying
+```
+---
+class: middle, center
+
+## Installing Burp Certificates
+
+In Burp, add a new proxy listener on port 8080, listening on all interfaces (tab Proxy > Options > button Add):
+
+Then, from the victim machine, browse to http://10.0.0.1:8080.
+		
+Click on CA Certificate in the top-right corner to download Burp’s CA certificate.
+
+<img src="{{ site.github.url }}/images/fulls/burpca.png" alt="Burp CA Cert"/>
+
+---
+class: middle, center
+
+On the Windows 7 victim machine: open the file, click Install certificate >Next > Place all certificates in the following store: Trusted Root Certification Authorities > Next
+---
+class: middle, center
+
+On the Ubuntu victim machine:
+
+Convert the certificate to the appropriate format (.crt) using
+
+```
+openssl x509 -in ~/Downloads/cacert.der -inform DER -out burp.crt
+```
+
+Copy it to /usr/local/share/ca-certificates
+
+```
+sudo cp burp.crt /usr/local/share/ca-certificates/
+```
+
+---
+class: middle, center
+
+Run
+
+```
+sudo update-ca-certificates
+```
+
+Firefox by default doesn’t use the system’s certificate store. If you want the SSL connection to work properly in Firefox as well, go to the Firefox settings into Advanced > Certificates > Import. Choose burp.crt, check Trust this CA to identify websites
+
+<img src="{{ site.github.url }}/images/fulls/sslok.png" alt="SSL Success!"/>
+---
+class: middle, center
+
+## Demonstration
+
+Network Analysis of TeslaCrypt Ransomeware 
+
+---
+class: middle, center
+
+## Debugging
+
+--
+
+Setting up breakpoints inside the suspicious file to stop its execution at a given location and inspect its state. Can break when it calls to important APIs.
+
+--
+
+Tools - IDA, OllyDbg, x64dbg, WinDbg
+
+---
+name: androidmalware
+class: middle, center
+
+# Android Malware
+--
+
+## Android software stack 
+
+--
+
+<img src="{{ site.github.url }}/images/fulls/android-software-stack.png" alt="Android Software Stack" style="width:546px; height:370px;"/>
+
+---
+class: middle, center
+
+## The Attack Surface
+
+Attack surface simply means the characteristics of a target that makes it vulnerable to attack.
+
+--
+
+<img src="{{ site.github.url }}/images/fulls/android-attack-surface.png" alt="Android Attack Surface" style="width:800px; height:550px;"/>
+
+---
+class: middle, center
+
+# Android Malware Detection & Analysis
+
+Malware detection as a discipline combines multiple techniques and principles
+
+--
+
+## Detection Techniques
+
+--
+
+Signature Based Detection
+
+Anomaly Based Detection
+
+Specification Based Detection
+
+---
+class: middle, center
+
+## Detection Analysis
+
+--
+
+### Static Analysis
+
+--
+
+- Studying the <b class="highlated-text">AndroidManifest.xml</b>
+
+--
+
+- Analysing App Permissons
+
+--
+
+- Looking up online!
+
+--
+
+### Dynamic Analysis
+
+--
+
+- Analysing Network Activity
+
+--
+
+- System monitoring (CPU, Memory, Storage. etc)
+
+---
+class: middle, center
+
+## Tools for static analysis
+
+ApkTool
+
+Dex2jar
+
+jadx
+
+quark engine
+
+---
+class: middle, center
+
+# Hands on 
+
+Please collect resources from here
+
+---
+name: incidentanalysis
+class: middle, center
+
+# Incident Response
+
+--
+
+Incident Response is an organized approach to addressing and managing the aftermath of a security breach or attack (also known as an incident). The goal is to handle the situation in a way that limits damage and reduces  recovery time and costs.
+
+--
+
+## Preparation
+
+--
+
+The initial phase where we will perform preparatory measures to ensure that they can responsd effectively to incidents if and when they are uncovered.
+
+---
+class: middle, center
+
+## Detect & Analyze
+
+--
+
+In this phase we should strive to detect and validate incidents rapidly because infections can spread through the network within a matter of minutes. Early detection can help to minimize the number of infected systems, which will lessen the magnitude of the recovery effort and the amount of damage the organization sustains as a result of the incident. 
+
+--
+
+## Contain, Eradicate& Recover
+
+--
+
+The third phase, containment, has two major components: stopping the spread of the attack and preventing further damage to systems. It is important for an us to decide which methods of containment to employ early in the response. We should have strategies and procedures in place for making containment-related decisions that reflect the level of risk acceptable to the organization.
+
+---
+class: middle, center
+
+## Post-Incident Handling
+
+--
+
+The cost of handling malware incidents can be extremely expensive, it is particularly important for organizations to conduct a robust assessment of lessons learned after major malware incidents to prevent similar incidents from occurring.
+
+---
+name: honeypots
+class: middle, center
+
+# Honeypots & Honeynets
+
+--
+
+Honeypot is an information system resource whose value lies in the unauthorized or illicit use of that resource.
+
+--
+
+Honeypot systems have no production value, so any activity going to or from a honeypot is likely a probe, attack or compromise.
+
+--
+
+A honeynet is simply a network of honeypots.
+
+--
+
+Information gathering and early warning are the primary benefits to most organisations.
+
+---
+class: middle, center
+
+## Issues?
+
+--
+
+In some cases, the data obtained from the honeypots lead to poor results, due to a limited amount of data
+
+--
+
+The attackers can detect the honeypots.
+
+--
+
+The honeypot may be used to attack against the real (non-honeypot) systems.
+
+---
+class: middle, center
+
+## Types
+
+--
+
+Low ­Interaction
+
+--
+
+High Interaction
+
+--
+
+Server Honeypots
+
+--
+
+Client Honeypots
+
+---
+class: middle, center
+
+## Example and Demonstration
+
+Dionea
+
+Kippo
+
+---
+name: thanks
+class: middle, center
+
+# Thanks

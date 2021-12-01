@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    {% include home.html %}
+    <body>
+
+        <textarea id="source">
+            {% for post in site.posts %}
+                <h1>{{ post.content }}</h1>
+                {{ content }}
+            {% endfor %}
+    
+        </textarea>
+        <script>
+          var hljs = remark.highlighter.engine;
+        </script>
+        <script type="text/javascript">
+          var slideshow = remark.create({
+            highlightLanguage: 'python',
+            highlightStyle: 'monokai',
+            highlightLines: true,
+            navigation: {scroll: false},
+          });
+        </script>
+      </body>
+</html>
