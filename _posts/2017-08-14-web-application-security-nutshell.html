@@ -252,106 +252,6 @@ There are two fundamental approaches to malware analysis:
 ---
 class: middle, center
 
-<img src="{{ site.github.url }}/images/fulls/analysis-cmplx.png" alt="Analysis Complexity" style="width:720px; height:425px;"/>
-
----
-name: staticanalysis
-class: middle, center
-
-## Fully-Automated Analysis
-
-The easiest way to assess the nature of a suspicious file is to scan it using fully-automated tools.
-Helps to handle large number of files.
-
-- https://www.hybrid-analysis.com/
-- https://sandbox.pikker.ee/
-- https://amaaas.com
-- https://any.run/
-- https://analyze.intezer.com/
-
-## Static Properties Analysis
-
-An analyst interested in taking a closer look at the suspicious file might proceed by examining its static properties.
-Looking at static properties can sometimes be sufficient for defining basic indicators of compromise.
-
----
-name: statichandson
-class: middle, center
-
-# Hands-on
-
---
-
-## Initial Assessment
-
-We are using PeStudio for Static Properties Analysis
-
-<img src="{{ site.github.url }}/images/fulls/pe-studio.png" alt="Lab Setup"/>
----
-class: middle, center
-
-### Hashes
-
-This can be identified as the digital fingerprint of a program, in case of malicious programs this can be used for identifying the executable at online(virustotal.com, totalhash.com etc).
-
----
-class: middle, center
-### Strings
-
-Strings can give us valuable information about the malware functionality. Malware will usually contain useful strings and other random strings, also known as garbage strings.
-
-The types of strings we are looking for are:
-    
-File names
-
-URL’s (Domains the malware connects to)
-
-IP Addresses
-
-Registry Keys
-
-Attackers may also include fake strings to disrupt our analysis!. Completely Random looking strings can be a sign of packed malwares.
-
----
-class: middle, center
-### Embedded Artifacts(Libraries)
-
-Windows executable requires dll's to interact with the environment. dll's help to intertact with hardware, filessytem, network etc. The lesser imports the higher chances to doubt the program.
-
----
-class: middle, center
-### Imports and Exports
-
-The functions used by the program while it's running(Can be memory allocation, accessing disks, cryptography etc). 
-
-eg: VirtualAlloc - requesting extra memory from operating system, it can be misused by malicious program to expand and extract the packed code.
-
----
-name: staticanalysis
-class: middle, center
-
-## Interactive Behavior Analysis
-
-After using automated tools and examining static properties of the file.
-This often entails infecting an isolated laboratory system with the malicious program to observe its behavior.
-
-## Manual Code Reversing
-
-Reverse-engineering the code that comprises the specimen can add valuable insights to the findings available after completing interactive behavior analysis. Some characteristics of the specimen are simply impractical to exercise and examine without examining the code.
-
-code reversing can provide include:
-
-- Decoding encrypted data stored or transferred by the sample;
-- Determining the logic of the malicious program’s domain generation algorithm;
-- Understanding other capabilities of the sample that didn’t exhibit themselves during behavior analysis.
----
-class: middle, center
-
-# Hands on
-
----
-class: middle, center
-
 ## Preparing the Lab
 
 --
@@ -460,26 +360,6 @@ class: middle, center
 `ping 10.0.0.1`
 
 ---
-## Ubuntu victim machine
-
-Append the following at the end of the file `/etc/network/interfaces`
-
-```
-auto eth0
-iface eth0 inet static
- address 10.0.0.2
- gateway 10.0.0.1
- netmask 255.255.255.0
- dns-nameservers 10.0.0.1
-```
-
-And run:
-
-```
-sudo ifup eth0
-sudo service networking restart
-```
----
 name: staticanalysis
 class: middle, center
 
@@ -493,148 +373,229 @@ It doesn’t hurt to do it for your analysis machine as well.
 <img src="{{ site.github.url }}/images/fulls/snap.png" alt="Internet conf Windows"/>
 
 ---
+class: middle, center
 
+<img src="{{ site.github.url }}/images/fulls/analysis-cmplx.png" alt="Analysis Complexity" style="width:720px; height:425px;"/>
+
+---
 name: staticanalysis
 class: middle, center
 
-# Static Malware Analysis
+## Fully-Automated Analysis
 
---
+The easiest way to assess the nature of a suspicious file is to scan it using fully-automated tools.
+Helps to handle large number of files.
 
-Taking a closer look at the suspicious file by examining its static properties.
+- https://www.hybrid-analysis.com/
+- https://sandbox.pikker.ee/
 
---
+## Static Properties Analysis
 
-Static properties include the strings embedded into the file, header details, hashes, embedded resources, packer signatures, metadata such as the creation date, etc.
-
---
-
-This process also helps determine whether the analyst should take closer look at the specimen using more comprehensive techniques and where to focus the subsequent steps.
+An analyst interested in taking a closer look at the suspicious file might proceed by examining its static properties.
+Looking at static properties can sometimes be sufficient for defining basic indicators of compromise.
 
 ---
+name: Title
 class: middle, center
 
-## Program Analysis
-
---
-
-### Determining the type of executable
-
---
-
-ELF, EXE, APK.. etc
-
+# Static Analysis
 ---
-class: middle, center
+name: Title
+class: middle
 
-## PE
+## Static Analysis
 
-<img src="{{ site.github.url }}/images/fulls/PE.png" alt="Portable Executable" style="width:900px; height:500px;"/>
+- Static analysis is the process of analyzing malware/binary without executing it.
 
----
-class: middle, center
-
-## ELF
-
-<img src="{{ site.github.url }}/images/fulls/ELF.png" alt="ELF" style="width:900px; height:500px;"/>
-
----
-class: middle, center
-
-### Portable Executable File
-
---
-
-The Portable Executable (PE) file format is used by Windows execut-
-ables, object code, and DLLs. The PE file format is a data structure that
-contains the information necessary for the Windows OS loader to manage
-the wrapped executable code
-
----
-class: middle, center
-
-### PE Headers and Sections
-
---
-
-PE file headers can provide considerably more information than just imports.
-The PE file format contains a header followed by a series of sections. The
-header contains metadata about the file itself.
-
---
-
-### PE Headers
-
---
-
-Imports - Functions from other libraries that are used by the malware
-
-Exports -  Functions in the malware that are meant to be called by other programs
-or libraries
-
-Time Date Stamp - Time when the program was compiled
-
-Sections - Names of sections in the file and their sizes on disk and in memory
-
-Subsystem - Indicates whether the program is a command-line or GUI application
-
-Resources - Strings, icons, menus, and other information included in the file
-
----
-class: middle, center
-
-### PE Sections
-
---
-
-.text - Contains the executable code
-
-.rdata - Contains read-only data that is globally accessible within the program
-
-.data - Stores global data accessed throughout the program
-
-.rsrc - Stores resources needed by the executable
-
---
-
-### Tools that can be used to analyse PE files
-
-- PEView
-- PEiD
-- PEStudio
-- Resouce Hacker
-
----
-class: middle, center
-
-## The baby steps
-
---
-
-Look for strings
-
---
-
-Calculate Hash of the executable
-
---
-
-Look them up in online
-virustotal.com is a great resource for simple static analysis.
-
----
-class: middle, center
-
-## Reversing the executable
-
---
-
-Advanced static analysis consists of reverse-engineering the malware’s internals by loading the executable into a disassembler and looking at the program instructions in order to discover what the program does.
-
-The instructions are executed by the CPU, so advanced static analysis tells you exactly what the program does.
+- The objective is to extract useful information from the malware, this will help us get an idea of the type of malware and what the malware can do. This information is useful for future analysis as it will allows us to efficiently analyze the sample going forward.
 
 ---
 
+name: Title
+class: middle
+
+## Static analysis - approach
+
+- Identifying the file type - Target OS, architecture and format (dll, exe)
+
+
+- Identifying the malware - Generating a hash of the malware, this will give the malware a unique identifier. Using the hash to see if anyone else has analyzed the malware.
+
+
+- Strings - Strings give us an idea/glimpse of what the malware can do.
+
+
+- Packing & Obfuscation - Obfuscation & packing are techniques used to prevent detection. Unpacking or deobfuscating can reveal additional information.
+
+
+- PE headers - The PE header reveals a lot of information on the malware functionality.
+
+---
+name: Title
+class: middle
+
+## Identifying the file type
+
+- Identifying the file type is extremely important as it helps us identify the target OS and the corresponding architecture.
+
+
+- An example of a Windows executable file is the PE (Portable Executable).
+
+
+- A PE could be in the form of; .exe, .dll etc.
+
+
+- To accurately identify a file type we need to analyze the file signature. This is to avoid false positives caused by the use of double extensions.
+
+
+- The file signature exists on the file header.
+
+
+- The file signature for PE files are represented by hexadecimal values of 4D 5A or MZ in the first 2 bytes (0-1).
+
+
+- PE programs also have the notice “This program cannot be run in DOS mode”
+
+
+- The PE header begins at hex 50 45.
+
+---
+name: Title
+class: middle
+
+## Malware hashing
+
+- Malware hashing is the process of generating cryptographic hashes for the file content of the target malware. We are hashing the malware file.
+
+
+- The hashing algorithms used in malware identification are:
+
+    - MD5
+    - SHA-1
+    - SHA-256
+
+- The hashing process gives us a unique digest known as a fingerprint.
+
+
+- This means we can create unique fingerprints for malware samples.
+
+---
+name: Title
+class: middle
+
+## Why should you hash?
+
+- For accurate identification of malware samples, rather than using file names for malware. Hashes are unique.
+
+
+
+- Hashes are used to identify malware on malware analysis sites. (Virus Total).
+
+
+- A PE could be in the form of; .exe, .dll etc.
+
+
+- Hashes can be used to search for any previous etections or for checking online if the sample has been analyzed by other researchers.
+
+---
+name: Title
+class: middle
+
+## Strings analysis
+
+- This is the process of extracting readable characters and words from the malware.
+
+- Strings can give us valuable information about the malware functionality.
+
+- Malware will usually contain useful strings and other random strings, also known as garbage strings.
+
+- Strings are in ASCII and Unicode format.
+
+- The types of strings we are looking for are:
+
+    - File names
+    - URLs
+    - IP Addresses
+    - Registry Keys
+---
+name: Title
+class: middle
+
+## Packers
+
+- A packer is a tool that is used to compress the content of the malware.
+
+- Attackers will use packers to obfuscate the content of the malware, this makes it difficult to analyze strings.
+
+- Packers compress an executable and when executed the packed executable will be decompressed. This allows us to analyze the original unpacked executable.
+
+---
+name: Title
+class: middle
+
+## PE header
+
+### Why is the PE header important?
+
+- It contains all of the important and necessary information required by the OS to execute the executable.
+
+- It contains information that specifies where the executable needs to be loaded in to memory.
+
+- It contains the libraries that the executable requires to be loaded (dll).
+
+- It contains information that specifies where the execution begins.
+
+---
+name: Title
+class: middle
+
+## PE Header Structure
+
+<img src="{{ site.github.url }}/images/fulls/pe-header-structure.png" alt="Lab Setup" style="width:900px; height:450px;"/>
+
+---
+name: Title
+class: middle
+
+## PE Sections
+
+<img src="{{ site.github.url }}/images/fulls/pe-sections.png" alt="Lab Setup" style="width:900px; height:400px;"/>
+
+---
+name: Title
+class: middle
+
+## Analyzing The PE Header
+
+- The PE header contains the information the OS requires to run the executable.
+
+- In static analysis, we are looking for information about the executable, that can give us a glimpse of its functionality and origin.
+
+### What information are we interested in?
+
+- Compiler Stamp - When and where the malware was compiled.
+
+- Subsystem - What subsystem is being used?
+
+- Sections - Is the executable packed and are there any inconsistent permissions.
+
+- Libraries & Imports - What libraries and imports are being used, and what information do they give us about the functionality of the malware.
+
+---
+name: Title
+class: middle
+
+## Examining The Resources Section (.rsrc)
+
+- The resources section contains all the necessary files and information that are used/required by the executable. For example: icons, dialogs
+
+### Why is it important?
+
+- Attackers can utilize the resources section to store more malicious files and data like payloads, droppers, configuration info etc.
+
+- The resource section is also useful as it may contain information about the origin of the malware.
+
+---
 name: dynamicanalysis
 class: middle, center
 
